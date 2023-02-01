@@ -6,4 +6,6 @@ Utilizing:
 - Python
 - Pandas 
 - Streamlit
-- Altair
+- PyPlot
+
+Main goal of this project was to get familiar with the Streamlit application.

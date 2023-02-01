@@ -1,8 +1,7 @@
 
 import streamlit as st
 import pandas as pd 
-import altair as alt
-
+import plotly.express as px
 
 st.set_page_config(
     page_title = "itsMike Dashboard", 
@@ -15,15 +14,18 @@ st.write("""
     ##### built by **itsMike**
 
 """)
+@st.cache()
+def read_excel():
+    data = pd.read_excel(
+        io = "sample.xls",
+        engine = "xlrd",
+        sheet_name = "Orders",  
+        nrows = 1000
+    )
+    return data
 
-data = pd.read_excel(
-    io = "sample.xls",
-    engine = "xlrd",
-    sheet_name = "Orders",  
-    nrows = 1000
-)
-
-# Sidebar 
+data = read_excel()
+# Sidebar (filtering)
 
 st.sidebar.header("Available filters: ")
 region = st.sidebar.multiselect(
@@ -49,11 +51,9 @@ data_selection = data.query(
 )
 
 # Displaying the modified dataframe
-st.dataframe(data_selection)
+# st.dataframe(data_selection) 
 
-
-
-# Charts
+# Sales description
 
 total_sales = int(data_selection['Sales'].sum())
 
@@ -73,3 +73,37 @@ with m_column:
 with r_column:
     st.subheader("Total Profit:")
     st.subheader(f"US$ {total_profit:,}")
+
+
+# Charts
+
+# Sales by category
+sales_by_category = (
+    data_selection.groupby(by=['Category']).sum()['Sales']
+)
+
+fig_sales_by_category = px.bar(
+    sales_by_category,
+    x='Sales', 
+    y=sales_by_category.index, 
+    orientation='h', 
+    title='Total Sales by Category', 
+    template = "plotly_white"
+)
+
+sales_by_region = (
+    data_selection.groupby(by=['Region']).sum()['Sales']
+)
+
+fig_sales_by_region = px.bar(
+    sales_by_region,
+    x=sales_by_region.index,
+    y="Sales", 
+    title="Total Sales by Region",
+    template="plotly_white"
+)
+
+l_column, r_column = st.columns(2)
+
+l_column.plotly_chart(fig_sales_by_category, use_container_width=True)
+r_column.plotly_chart(fig_sales_by_region, use_container_width=True)

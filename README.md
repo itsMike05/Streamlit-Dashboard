@@ -11,7 +11,7 @@ Utilizing:
 Main goal of this project was to get familiar with the Streamlit application.
 
 ### Getting started:
-Install the libraries
+Install the libraries:
 ```shell
 pip install pandas
 pip install streamlit
@@ -30,3 +30,10 @@ streamlit run app.py
 ```
 
 Shortly after, a localhost port will be presented and a browser window should be opened immidiately.
+
+If you get an error regarding the 'xlrd' - install it separately:
+```shell
+pip install xlrd
+or 
+py -m pip install xlrd
+```
